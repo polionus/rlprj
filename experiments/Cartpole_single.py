@@ -9,6 +9,8 @@ import numpy as np
 from tqdm import tqdm
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
+import os
+import pandas as pd
 
 # Define parameters
 n_timsteps = 500_000 # Number of timesteps for training
@@ -20,6 +22,9 @@ num_deltas = 15 # Number of time steps
 deltas = np.logspace(start_delta_exponent, end_delta_exponent, num_deltas) # Generate exponentially spaced values 
 training_delta = 1e-10
 checker_delta = 1e-10
+desc_color = "\033[92m"  # Green color
+reset_color = "\033[0m"  # Reset to default color
+path_to_google_drive = "path/to/desktop/google/drive/RL Project (Fall 2024)/Results/CartPole_Single"
 
 
 # Function to train the PPO model on CartPole env
@@ -34,9 +39,6 @@ def train_model():
 # Function to test the PPO model on the CartPole env with varying dt_multip
 
 def test_model():
-    desc_color = "\033[92m"  # Green color
-    reset_color = "\033[0m"  # Reset to default color
-
     model = PPO.load("ppo_cartpole")
     returns_mean = []
 
@@ -72,7 +74,50 @@ def test_model():
     plt.title("PPO Performance on CartPole with Varying dt_multip")
     plt.show()
 
+    save = input("Do you want to save this experiment? (yes/no): ").strip().lower()
+    if save == "yes":
+        save_experiment(returns_mean, deltas)
 
+
+# Function to save experiment results in a unique folder
+def save_experiment(returns_mean, deltas):
+    base_dir = path_to_google_drive
+
+    # Determine the next experiment number
+    existing_experiments = [f for f in os.listdir(base_dir) if f.startswith("exp")]
+    next_experiment_num = len(existing_experiments) + 1
+    experiment_dir = os.path.join(base_dir, f"exp{next_experiment_num:03d}")
+    os.makedirs(experiment_dir, exist_ok=True)
+
+    # Save the plot as an image in the experiment folder
+    plot_path = os.path.join(experiment_dir, "plot.png")
+    plt.plot(deltas, returns_mean)
+    plt.scatter(deltas, returns_mean, color='red', label="Data Points", zorder=5)
+    plt.xlabel("Time Step Multiplier (dt_multip)")
+    plt.ylabel("Mean Return")
+    plt.title("PPO Performance on CartPole with Varying dt_multip")
+    plt.savefig(plot_path)
+    plt.close()
+
+    # Save the experiment data in an Excel file
+    excel_path = os.path.join(experiment_dir, "experiment_data.xlsx")
+
+    # Save parameters and results in two separate sheets
+    with pd.ExcelWriter(excel_path) as writer:
+        # Parameters sheet
+        parameters_df = pd.DataFrame({
+            "Parameter": ["n_timesteps", "policy_net_arch", "seeds", "num_deltas", "start_delta_exponent", "end_delta_exponent", "training_delta", "checker_delta"],
+            "Value": [n_timsteps, str(policy_kwargs["net_arch"]), seeds, num_deltas, start_delta_exponent, end_delta_exponent, training_delta, checker_delta]
+        })
+        parameters_df.to_excel(writer, sheet_name="Parameters", index=False)
+
+        results_df = pd.DataFrame({
+            "delta": deltas,
+            "mean returns": returns_mean
+        })
+        results_df.to_excel(writer, sheet_name="Results", index=False)
+
+    print(f"Experiment saved to {experiment_dir}")
 
 # Function to test the environment behaviour 
 def code_checker():
