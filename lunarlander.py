@@ -19,9 +19,9 @@ policy_kwargs = dict(net_arch=[64, 64, 64])
 # Parallel environments
 #vec_env = make_vec_env("LunarLander-v2", n_envs=4)
 #vec_env = make_vec_env("CartPole-v1", n_envs=4)
-env = gym.make("LunarLander-v2", continuous=False, gravity=-10.0,
-               enable_wind=False, wind_power=15.0, turbulence_power=1.5,dt = 10)
-#env = gym.make("CartPole-v1", dt_multip = 1)
+#env = gym.make("LunarLander-v2", continuous=False, gravity=-10.0,
+               #enable_wind=False, wind_power=15.0, turbulence_power=1.5,dt = 10)
+env = gym.make("CartPole-v1", dt_multip = 1e-10)
 
 
 # model = PPO("MlpPolicy", env, policy_kwargs = policy_kwargs, verbose=1)
@@ -37,35 +37,34 @@ env = gym.make("LunarLander-v2", continuous=False, gravity=-10.0,
               enable_wind=False, wind_power=15.0, turbulence_power=1.5, render_mode = "human", dt = 10)
 
 
-obs, _ = env.reset()
-for step in range(500):
-    env.render()
-    action, _states = model.predict(obs)
-    obs,reward, terminated, truncated, _ = env.step(action)
-    print(reward)
+# obs, _ = env.reset()
+# for step in range(500):
+#     env.render()
+#     action, _states = model.predict(obs)
+#     obs,reward, terminated, truncated, _ = env.step(action)
+#     print(reward)
 
-env.close()
-exit()
-
-
-
+# env.close()
+# exit()
 
 seeds = 100
 #deltas = [5e-3,1e-2,3e-2,5e-2, 1e-1,2e-1, 3e-1, 4e-1, 5e-1, 7e-1, 1e0]
 
 num_deltas = 30
-start_delta = 1e-3
+start_delta = 1e-15
 end_delta = 1
 
-increment = (end_delta-start_delta)/num_deltas
-deltas = [start_delta + increment*i for i in range(num_deltas)]
+# increment = (end_delta-start_delta)/num_deltas
+increment = 1e-1
+deltas = [start_delta * increment**i for i in range(num_deltas)]
 #deltas = []
 
 returns_mean = []
 for dt in tqdm(deltas):
     print(dt)
-    env = gym.make("LunarLander-v2", continuous=False, gravity=-10.0,
-               enable_wind=False, wind_power=15.0, turbulence_power=1.5,dt = dt)
+    #env = gym.make("LunarLander-v2", continuous=False, gravity=-10.0,
+               #enable_wind=False, wind_power=15.0, turbulence_power=1.5,dt = dt)
+    env = gym.make("CartPole-v1", dt_multip = dt)
     
     returns = []
 
@@ -76,7 +75,7 @@ for dt in tqdm(deltas):
 
         for step in range(500):
             #env.render()
-            action, _states = model.predict(obs)
+            action, _states = model.predict(obs, deterministic = True)
             obs,reward, terminated, truncated, _ = env.step(action)
             #obs,reward, terminated, trunctated, _ = env.step(env.action_space.sample())
 
