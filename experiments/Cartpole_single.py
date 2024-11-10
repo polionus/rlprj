@@ -1,6 +1,9 @@
+import sys
+
+mode = str(sys.argv[1])
+
 import gymnasium as gym
-""" print(gym.__file__)
-exit() """
+
 import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
@@ -129,6 +132,7 @@ def code_checker():
 
     env.close()
 
-
-
-test_model()
+if mode == "train":
+    train_model()
+elif mode == "test":
+    test_model()
