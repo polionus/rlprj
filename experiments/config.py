@@ -5,7 +5,6 @@ settings = {
     "start_delta_exponent":-15,
     "end_delta_exponent":0,
     "num_deltas":15,
-    "deltas":,
     "training_delta":1e-10,
     "checker_delta":1e-10,
     "desc_color":"\033[92m",

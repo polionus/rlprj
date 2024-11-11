@@ -14,20 +14,25 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 import os
 import pandas as pd
+from config import settings #use the config file to change the experiment!
+
+
+
+#TODO: Refactor into a function
 
 # Define parameters
-n_timsteps = 500_000 # Number of timesteps for training
-policy_kwargs = dict(net_arch=[64, 64, 64]) # Neural network architecture
-seeds = 100 # Testing different initial states
-start_delta_exponent = -15 # Starting delta exponent multiplier for time step
-end_delta_exponent = 0 # Ending delta exponent multiplier for time steps
-num_deltas = 15 # Number of time steps
+n_timsteps = settings["n_timsteps"] # Number of timesteps for training
+policy_kwargs = settings["policy_kwargs"] # Neural network architecture
+seeds = settings["seeds"] # Testing different initial states
+start_delta_exponent = settings["start_delta_exponent"] # Starting delta exponent multiplier for time step
+end_delta_exponent = settings["end_delta_exponent"] # Ending delta exponent multiplier for time steps
+num_deltas = settings["num_deltas"] # Number of time steps
 deltas = np.logspace(start_delta_exponent, end_delta_exponent, num_deltas) # Generate exponentially spaced values 
-training_delta = 1e-10
-checker_delta = 1e-10
-desc_color = "\033[92m"  # Green color
-reset_color = "\033[0m"  # Reset to default color
-path_to_google_drive = "path/to/desktop/google/drive/RL Project (Fall 2024)/Results/CartPole_Single"
+training_delta = settings["training_delta"]
+checker_delta = settings["checker_delta"]
+desc_color = settings["desc_color"]  # Green color
+reset_color = settings["reset_color"] # Reset to default color
+path_to_google_drive = settings["path_to_google_drive"]
 
 
 # Function to train the PPO model on CartPole env
