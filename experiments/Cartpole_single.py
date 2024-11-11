@@ -1,8 +1,12 @@
 import sys
+import gymnasium as gym
+print(gym.__file__)
+exit()
+
 
 mode = str(sys.argv[1])
 
-import gymnasium as gym
+
 
 import matplotlib.pyplot as plt
 import numpy as np
