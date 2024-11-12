@@ -1,5 +1,5 @@
 settings = {
-    "n_timsteps": 500_000,
+    "n_timesteps": 500_000,
     "policy_kwargs": dict(net_arch=[64, 64, 64]),
     "seeds":100,
     "start_delta_exponent":-40,
@@ -12,3 +12,5 @@ settings = {
     "path_to_google_drive":"path/to/desktop/google/drive/RL Project (Fall 2024)/Results/CartPole_Single",
 
 }
+
+

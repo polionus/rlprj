@@ -28,7 +28,7 @@ from config import settings #use the config file to change the experiment!
 #TODO: Refactor into a function
 
 # Define parameters
-n_timsteps = settings["n_timsteps"] # Number of timesteps for training
+n_timesteps = settings["n_timesteps"] # Number of timesteps for training
 policy_kwargs = settings["policy_kwargs"] # Neural network architecture
 seeds = settings["seeds"] # Testing different initial states
 start_delta_exponent = settings["start_delta_exponent"] # Starting delta exponent multiplier for time step
@@ -46,7 +46,7 @@ path_to_google_drive = settings["path_to_google_drive"]
 def train_model():
     env = gym.make("CustomCartPole-v0", dt_multip = training_delta)
     model = PPO("MlpPolicy", env, policy_kwargs = policy_kwargs, verbose=1)
-    model.learn(total_timesteps=n_timsteps)
+    model.learn(total_timesteps=n_timesteps)
     model.save("ppo_cartpole")
     env.close()
 
@@ -122,7 +122,7 @@ def save_experiment(returns_mean, deltas):
         # Parameters sheet
         parameters_df = pd.DataFrame({
             "Parameter": ["n_timesteps", "policy_net_arch", "seeds", "num_deltas", "start_delta_exponent", "end_delta_exponent", "training_delta", "checker_delta"],
-            "Value": [n_timsteps, str(policy_kwargs["net_arch"]), seeds, num_deltas, start_delta_exponent, end_delta_exponent, training_delta, checker_delta]
+            "Value": [n_timesteps, str(policy_kwargs["net_arch"]), seeds, num_deltas, start_delta_exponent, end_delta_exponent, training_delta, checker_delta]
         })
         parameters_df.to_excel(writer, sheet_name="Parameters", index=False)
 
