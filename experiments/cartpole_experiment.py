@@ -137,7 +137,7 @@ def save_experiment(returns_mean, deltas):
 # Function to test the environment behaviour 
 def code_checker():
     model = PPO.load("ppo_cartpole")
-    env = gym.make("CartPole-v1", dt_multip = checker_delta)
+    env = gym.make("CustomCartPole-v0", dt_multip = checker_delta)
     obs, _ = env.reset()
     for step in range(500):
         env.render()
