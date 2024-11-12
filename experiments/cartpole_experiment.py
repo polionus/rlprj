@@ -2,6 +2,13 @@ import sys
 import gymnasium as gym
 
 
+#Import the Custom Envrionment and register it:
+
+
+gym.register(
+    id="CustomCartPole-v0",
+    entry_point="custom_cartpole:CustomCartPoleEnv",
+)
 
 mode = str(sys.argv[1])
 
@@ -37,7 +44,7 @@ path_to_google_drive = settings["path_to_google_drive"]
 
 # Function to train the PPO model on CartPole env
 def train_model():
-    env = gym.make("CartPole-v1", dt_multip = training_delta)
+    env = gym.make("CustomCartPole-v0", dt_multip = training_delta)
     model = PPO("MlpPolicy", env, policy_kwargs = policy_kwargs, verbose=1)
     model.learn(total_timesteps=n_timsteps)
     model.save("ppo_cartpole")
@@ -51,7 +58,7 @@ def test_model():
     returns_mean = []
 
     for dt in tqdm(deltas, desc="Testing different dt_multip values"):
-        env = gym.make("CartPole-v1", dt_multip = dt)
+        env = gym.make("CustomCartPole-v0", dt_multip = dt)
         returns = [] # store returns for each seed
 
         for seed in tqdm(range(seeds), desc=f"{desc_color}Testing with dt_multip = {dt} {reset_color}"):

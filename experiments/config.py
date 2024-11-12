@@ -11,7 +11,4 @@ settings = {
     "reset_color":"\033[0m",
     "path_to_google_drive":"path/to/desktop/google/drive/RL Project (Fall 2024)/Results/CartPole_Single",
 
-
-
-
 }
