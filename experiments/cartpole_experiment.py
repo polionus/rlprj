@@ -1,18 +1,15 @@
 import sys
 import gymnasium as gym
+from callbacks.training_curve_callback import RewardCallback
 
 
 #Import the Custom Envrionment and register it:
-
-
 gym.register(
     id="CustomCartPole-v0",
     entry_point="../envs/custom_cartpole:CustomCartPoleEnv",
 )
 
 mode = str(sys.argv[1])
-
-
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -21,7 +18,7 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 import os
 import pandas as pd
-from config import experiment_settings #use the config file to change the experiment!
+from configs.config import experiment_settings #use the config file to change the experiment!
 
 
 
@@ -44,9 +41,11 @@ path_to_google_drive = experiment_settings["path_to_google_drive"]
 
 # Function to train the PPO model on CartPole env
 def train_model():
+    reward_callback = RewardCallback() #TODO: check if this works
+
     env = gym.make("CustomCartPole-v0", dt_multip = training_delta)
     model = PPO("MlpPolicy", env, policy_kwargs = policy_kwargs, verbose=1)
-    model.learn(total_timesteps=n_timesteps)
+    model.learn(total_timesteps=n_timesteps, callback=reward_callback)
     model.save("ppo_cartpole")
     env.close()
 
