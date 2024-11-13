@@ -1,10 +1,11 @@
 from stable_baselines3.common.callbacks import BaseCallback
 import numpy as np
 
-
 #a call back that accumulates rewards
-
 class RewardCallback(BaseCallback):
+    '''A Callback receives and keeps the important signals that a train function produces,
+    and helps us with logging it.'''
+
     def __init__(self, verbose=0):
         super(RewardCallback, self).__init__(verbose)
         self.cum_reward = 0.
