@@ -4,13 +4,19 @@ import numpy as np
 
 #a call back that accumulates rewards
 
-class TrainingLoggerCallback(BaseCallback):
+class RewardCallback(BaseCallback):
     def __init__(self, verbose=0):
-        super(TrainingLoggerCallback, self).__init__(verbose)
-        self.rewards = []
+        super(RewardCallback, self).__init__(verbose)
+        self.cum_reward = 0.
+        #self.cum_done = 0.
 
     def _on_step(self) -> bool:
-        # Log rewards
-        if "episode" in self.locals:
-            self.rewards.append(self.locals["episode"]["r"])
-        return True 
+        reward = np.mean(self.locals["rewards"])  # average over all environments
+        #done = np.mean(self.locals["dones"])
+
+        self.cum_reward = self.cum_reward + reward
+        #self.cum_done = self.cum_done + done
+
+        self.logger.record('custom/cum_reward', self.cum_reward)
+        #self.logger.record('custom/cum_done', self.cum_done)
+        return True
