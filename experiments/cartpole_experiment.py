@@ -7,7 +7,7 @@ import gymnasium as gym
 
 gym.register(
     id="CustomCartPole-v0",
-    entry_point="custom_cartpole:CustomCartPoleEnv",
+    entry_point="envs/custom_cartpole:CustomCartPoleEnv",
 )
 
 mode = str(sys.argv[1])
