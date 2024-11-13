@@ -34,9 +34,7 @@ if TYPE_CHECKING:
 
 
 #EDIT: we change the FPS
-
-
-FPS = 3000
+FPS = 50
 
 #FPS = 50
 SCALE = 30.0  # affects how fast-paced the game is, forces should be adjusted as well
@@ -83,7 +81,7 @@ class ContactDetector(contactListener):
                 self.env.legs[i].ground_contact = False
 
 
-class LunarLander(gym.Env, EzPickle):
+class CustomLunarLander(gym.Env, EzPickle):
     """
     ## Description
     This environment is a classic rocket trajectory optimization problem.

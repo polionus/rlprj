@@ -52,7 +52,13 @@ def train_model():
 
 
 # Function to test the PPO model on the CartPole env with varying dt_multip
+    
 
+
+#TODO: change this to only incorporate training and plotting training curves
+#TODO: add seeds to the envionment and agent
+#TODO: Write function that calculates the time_steps needed to get the same wall-clock time.
+    
 def test_model():
     model = PPO.load("ppo_cartpole")
     returns_mean = []
