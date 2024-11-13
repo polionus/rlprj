@@ -1,5 +1,17 @@
-settings = {
-    "n_timesteps": 500_000,
+#Calculate the number of time steps
+from utils.utils import clock_to_time_steps
+
+n_timesteps = clock_to_time_steps()
+
+
+
+clock_settings = {
+    "wall-clock-time": 10,
+}
+
+
+experiment_settings = {      
+    "n_timesteps": clock_to_time_steps(clock_settings["wall-clock-time"]),
     "policy_kwargs": dict(net_arch=[64, 64, 64]),
     "seeds":100,
     "start_delta_exponent":-40,

@@ -21,25 +21,25 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.env_util import make_vec_env
 import os
 import pandas as pd
-from config import settings #use the config file to change the experiment!
+from config import experiment_settings #use the config file to change the experiment!
 
 
 
 #TODO: Refactor into a function
 
 # Define parameters
-n_timesteps = settings["n_timesteps"] # Number of timesteps for training
-policy_kwargs = settings["policy_kwargs"] # Neural network architecture
-seeds = settings["seeds"] # Testing different initial states
-start_delta_exponent = settings["start_delta_exponent"] # Starting delta exponent multiplier for time step
-end_delta_exponent = settings["end_delta_exponent"] # Ending delta exponent multiplier for time steps
-num_deltas = settings["num_deltas"] # Number of time steps
+n_timesteps = experiment_settings["n_timesteps"] # Number of timesteps for training
+policy_kwargs = experiment_settings["policy_kwargs"] # Neural network architecture
+seeds = experiment_settings["seeds"] # Testing different initial states
+start_delta_exponent = experiment_settings["start_delta_exponent"] # Starting delta exponent multiplier for time step
+end_delta_exponent = experiment_settings["end_delta_exponent"] # Ending delta exponent multiplier for time steps
+num_deltas = experiment_settings["num_deltas"] # Number of time steps
 deltas = np.logspace(start_delta_exponent, end_delta_exponent, num_deltas) # Generate exponentially spaced values 
-training_delta = settings["training_delta"]
-checker_delta = settings["checker_delta"]
-desc_color = settings["desc_color"]  # Green color
-reset_color = settings["reset_color"] # Reset to default color
-path_to_google_drive = settings["path_to_google_drive"]
+training_delta = experiment_settings["training_delta"]
+checker_delta = experiment_settings["checker_delta"]
+desc_color = experiment_settings["desc_color"]  # Green color
+reset_color = experiment_settings["reset_color"] # Reset to default color
+path_to_google_drive = experiment_settings["path_to_google_drive"]
 
 
 # Function to train the PPO model on CartPole env
