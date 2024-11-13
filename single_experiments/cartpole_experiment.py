@@ -11,11 +11,6 @@ gym.register(
 )
 
 mode = str(sys.argv[1])
-policy = str(sys.argv[2])
-
-assert policy == "random" or policy == "PPO" or policy == "ppo"
-
-
 
 
 
@@ -73,14 +68,14 @@ def test_model():
             # Run one episode (up to 500)
             for step in range(500):
                 
-
-                if policy == "PPO" or policy == "ppo":
-                    action, _states = model.predict(obs, deterministic=True)
-                elif policy == "random":
-                    obs,reward, terminated, trunctated, _ = env.step(env.action_space.sample())
+                action, _states = model.predict(obs, deterministic=True)
                 obs,reward, terminated, truncated, _ = env.step(action)
                 _return += reward
 
+                '''For checking with random policy'''
+                #obs,reward, terminated, trunctated, _ = env.step(env.action_space.sample())
+                # if terminated or truncated:
+                #     reward = 0
             
             
             returns.append(_return)
