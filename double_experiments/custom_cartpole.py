@@ -31,8 +31,9 @@ class CustomCartPoleEnv(gym.Env[np.ndarray, Union[int, np.ndarray]]):
     The action is a `ndarray` with shape `(1,)` which can take values `{0, 1}` indicating the direction
      of the fixed force the cart is pushed with.
 
-    - 0: Push cart to the left
+    - -1: Push cart to the left
     - 1: Push cart to the right
+    - 0: Do nothing 
 
     **Note**: The velocity that is reduced or increased by the applied force is not fixed and it depends on the angle
      the pole is pointing. The center of gravity of the pole varies the amount of energy needed to move the cart underneath it
@@ -119,7 +120,7 @@ class CustomCartPoleEnv(gym.Env[np.ndarray, Union[int, np.ndarray]]):
             dtype=np.float32,
         )
 
-        self.action_space = spaces.Discrete(2)
+        self.action_space = spaces.Discrete(3)
         self.observation_space = spaces.Box(-high, high, dtype=np.float32)
 
         self.render_mode = render_mode
@@ -139,7 +140,14 @@ class CustomCartPoleEnv(gym.Env[np.ndarray, Union[int, np.ndarray]]):
         ), f"{action!r} ({type(action)}) invalid"
         assert self.state is not None, "Call reset before using step method."
         x, x_dot, theta, theta_dot = self.state
-        force = self.force_mag if action == 1 else -self.force_mag
+        
+        #Calculate force
+        if action == 1:
+            force = self.force_mag
+        elif action == -1:
+            force = -self.force_mag
+        else:
+            force = 0
         costheta = math.cos(theta)
         sintheta = math.sin(theta)
 
