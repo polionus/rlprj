@@ -1,180 +1,121 @@
 import gymnasium as gym
+import numpy as np
+import matplotlib.pyplot as plt
 from stable_baselines3 import DQN
+from stable_baselines3 import PPO
+
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.common.callbacks import BaseCallback
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.integrate import trapz
 
 def make_env(env_id: str, rank: int, seed: int = 0):
     def _init():
-        env = gym.make(env_id, render_mode="human")
+        env = gym.make(env_id)
         env.reset(seed=seed + rank)
         return env
     set_random_seed(seed)
     return _init
 
 class MeanReturnCallback(BaseCallback):
-    def __init__(self, verbose=0, plot_interval=100):
+    def __init__(self, verbose=0):
         super(MeanReturnCallback, self).__init__(verbose)
         self.episode_rewards = []
         self.episode_returns = []
-        self.plot_interval = plot_interval
+        self.episode_lengths = []
+        self.episode_timestamps = []
+        self.total_timesteps = 0
+
+    def _on_training_start(self) -> None:
+        # Initialize the episode rewards after the environment is set
+        self.episode_rewards = [[] for _ in range(self.training_env.num_envs)]
+        # Initialize the plot
+        plt.ion()
+        self.fig, self.ax = plt.subplots(figsize=(10, 5))
+        self.line, = self.ax.plot([], [], label='Return')
+        self.ax.set_xlabel('Episode')
+        self.ax.set_ylabel('Return')
+        self.ax.set_title('Return over Episodes')
+        self.ax.grid(True)
+        self.ax.legend()
+        plt.show()
 
     def _on_step(self) -> bool:
-        self.episode_rewards.append(self.locals["rewards"])
+        # Get rewards and done flags for each environment
+        rewards = self.locals["rewards"]
+        dones = self.locals["dones"]
 
-        if np.any(self.locals["dones"]):
-            for idx, done in enumerate(self.locals["dones"]):
-                if done:
-                    episode_return = np.sum(self.episode_rewards)
-                    self.episode_returns.append(episode_return)
-                    self.episode_rewards = []
-                    # Plot periodically
-                    if len(self.episode_returns) % self.plot_interval == 0:
-                        self.plot_returns()
+        for i in range(len(rewards)):
+            self.episode_rewards[i].append(rewards[i])
+            if dones[i]:
+                # Compute episode return
+                episode_return = np.sum(self.episode_rewards[i])
+                self.episode_returns.append(episode_return)
+                self.episode_lengths.append(len(self.episode_rewards[i]))
+                self.episode_timestamps.append(self.num_timesteps)
+                self.episode_rewards[i] = []  # Reset rewards for the next episode
+
+                # Update the plot
+                self.line.set_xdata(range(len(self.episode_returns)))
+                self.line.set_ydata(self.episode_returns)
+                self.ax.relim()
+                self.ax.autoscale_view()
+                self.fig.canvas.draw()
+                self.fig.canvas.flush_events()
 
         return True
 
-    def plot_returns(self):
-        plt.figure(figsize=(10, 5))
-        plt.plot(self.episode_returns, label="Episode Return")
-        plt.xlabel("Episode")
-        plt.ylabel("Return")
-        plt.title("Episode Return During Training")
-        plt.legend()
-        plt.grid()
-        plt.show()
-
     def _on_training_end(self) -> None:
+        # Calculate mean return over all episodes
         mean_return = np.mean(self.episode_returns)
-        print(f"Mean return over all episodes: {mean_return}")
+        print(f"\nMean return over all episodes: {mean_return}")
 
-        # Calculate AUC using the trapezoidal rule
-        auc = trapz(self.episode_returns, dx=1)
-        print(f"Area Under the Curve (AUC) of Returns: {auc}")
+        # Compute area under the curve (AUC)
+        auc = np.trapz(self.episode_returns)
+        print(f"Area under the curve (AUC): {auc}")
 
-        # Final Performance: Plot all returns and AUC
-        plt.figure(figsize=(10, 5))
-        plt.plot(self.episode_returns, label="Episode Return")
-        plt.fill_between(range(len(self.episode_returns)), self.episode_returns, alpha=0.2)
-        plt.xlabel("Episode")
-        plt.ylabel("Return")
-        plt.title(f"Final Performance: Mean Return={mean_return:.2f}, AUC={auc:.2f}")
-        plt.legend()
-        plt.grid()
+        # Final performance (mean return over the last N episodes)
+        N = 100  # Adjust N as needed
+        if len(self.episode_returns) >= N:
+            final_performance = np.mean(self.episode_returns[-N:])
+            print(f"Final performance (mean return over last {N} episodes): {final_performance}")
+        else:
+            print("Not enough episodes for final performance calculation.")
+
+        # Keep the plot open after training ends
+        plt.ioff()
         plt.show()
+
 
 if __name__ == "__main__":
     env_id = "CartPole-v1"
-    num_cpu = 24
+    num_cpu = 32
     vec_env = SubprocVecEnv([make_env(env_id, i) for i in range(num_cpu)])
 
-    model = DQN("MlpPolicy", vec_env, verbose=1)
-    mean_return_callback = MeanReturnCallback(plot_interval=100)
-    model.learn(total_timesteps=int(1e5), callback=mean_return_callback)
+    # model = DQN(
+    #     "MlpPolicy",
+    #     vec_env,
+    #     learning_rate=0.001,
+    #     gamma=0.99,
+    #     buffer_size=100000,
+    #     batch_size=64,
+    #     exploration_fraction=0.1,
+    #     exploration_final_eps=0.02,
+    #     target_update_interval=500,
+    #     train_freq=1,
+    #     gradient_steps=1,
+    #     verbose=1
+    # )
+
+    model = PPO("MlpPolicy", vec_env, verbose=1)
+
+    mean_return_callback = MeanReturnCallback()
+    model.learn(total_timesteps=int(4e4), callback=mean_return_callback)
+
+    # model.save("CartPole")
 
 
-
-
-# import gymnasium as gym
-
-# from stable_baselines3 import PPO
-# from stable_baselines3 import DQN
-
-# from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
-# from stable_baselines3.common.env_util import make_vec_env
-# from stable_baselines3.common.utils import set_random_seed
-
-# from stable_baselines3.common.callbacks import BaseCallback
-# import numpy as np
-
-
-# def make_env(env_id: str, rank: int, seed: int = 0):
-#     """
-#     Utility function for multiprocessed env.
-
-#     :param env_id: the environment ID
-#     :param num_env: the number of environments you wish to have in subprocesses
-#     :param seed: the initial seed for RNG
-#     :param rank: index of the subprocess
-#     """
-#     def _init():
-#         env = gym.make(env_id, render_mode="human")
-#         env.reset(seed=seed + rank)
-#         return env
-#     set_random_seed(seed)
-#     return _init
-
-# class MeanReturnCallback(BaseCallback):
-#     def __init__(self, verbose=0):
-#         super(MeanReturnCallback, self).__init__(verbose)
-#         self.episode_rewards = []
-#         self.episode_returns = []
-
-#     def _on_step(self) -> bool:
-#         # Gather rewards at each step
-#         self.episode_rewards.append(self.locals["rewards"])
-
-#         # Check if the episode has ended
-#         if np.any(self.locals["dones"]):
-#             # Compute episode return for each environment in vectorized env
-#             for idx, done in enumerate(self.locals["dones"]):
-#                 if done:
-#                     episode_return = np.sum(self.episode_rewards)
-#                     self.episode_returns.append(episode_return)
-#                     self.episode_rewards = []  # Reset rewards for new episode
-
-#         return True
-
-#     def _on_training_end(self) -> None:
-#         # Calculate mean return over all episodes
-#         mean_return = np.mean(self.episode_returns)
-#         print(f"Mean return over all episodes: {mean_return}")
-
-# if __name__ == "__main__":
-#     # env_id = "CartPole-v1"
-#     # num_cpu = 24  # Number of processes to use
-#     # Create the vectorized environment
-#     # vec_env = SubprocVecEnv([make_env(env_id, i) for i in range(num_cpu)])
-
-#     # Stable Baselines provides you with make_vec_env() helper
-#     # which does exactly the previous steps for you.
-#     # You can choose between `DummyVecEnv` (usually faster) and `SubprocVecEnv`
-#     # env = make_vec_env(env_id, n_envs=num_cpu, seed=0, vec_env_cls=SubprocVecEnv)
-
-#     # model = PPO("MlpPolicy", vec_env, verbose=1)
-#     # model.learn(total_timesteps=25_000)
-
-#     # Instantiate the agent
-#     # model = DQN("MlpPolicy", vec_env, verbose=1)
-#     # Train the agent and display a progress bar
-#     # model.learn(total_timesteps=int(2e5), progress_bar=True)
-
-
-#     # ---------------
-#     # Instantiate the environment and the model
-#     env_id = "CartPole-v1"
-#     num_cpu = 24
-#     vec_env = SubprocVecEnv([make_env(env_id, i) for i in range(num_cpu)])
-
-#     model = DQN("MlpPolicy", vec_env, verbose=1)
-
-#     # Train the agent with the custom callback
-#     mean_return_callback = MeanReturnCallback()
-#     model.learn(total_timesteps=int(1e5), callback=mean_return_callback)
-
-#     # obs = vec_env.reset()
-#     # for _ in range(1000):
-#     #     action, _states = model.predict(obs)
-#     #     obs, rewards, dones, info = vec_env.step(action)
-#     #     vec_env.render()
-
-
-
-
-
-
-
-
+    # obs = vec_env.reset()
+    # for _ in range(1000):
+    #     action, _states = model.predict(obs)
+    #     obs, rewards, dones, info = vec_env.step(action)
+    #     vec_env.render()
