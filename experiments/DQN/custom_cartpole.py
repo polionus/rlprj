@@ -89,7 +89,9 @@ class CustomCartPoleEnv(gym.Env[np.ndarray, Union[int, np.ndarray]]):
     }
 
     #THE init has been changed, remove later.
-    def __init__(self, render_mode: Optional[str] = None):
+    def __init__(self, render_mode: Optional[str] = None, dt_multip = 1):
+
+        self.dt_multip = dt_multip
 
         self.gravity = 9.8
         self.masscart = 1.0
@@ -98,7 +100,7 @@ class CustomCartPoleEnv(gym.Env[np.ndarray, Union[int, np.ndarray]]):
         self.length = 0.5  # actually half the pole's length
         self.polemass_length = self.masspole * self.length
         self.force_mag = 10.0
-        self.tau = 0.02  # seconds between state updates
+        self.tau = 0.02 * self.dt_multip  # seconds between state updates
         self.kinematics_integrator = "euler"
 
         # Angle at which to fail the episode
@@ -172,11 +174,11 @@ class CustomCartPoleEnv(gym.Env[np.ndarray, Union[int, np.ndarray]]):
         )
 
         if not terminated:
-            reward = 1.0
+            reward = 1.0 * self.dt_multip
         elif self.steps_beyond_terminated is None:
             # Pole just fell!
             self.steps_beyond_terminated = 0
-            reward = 1.0
+            reward = 1.0 * self.dt_multip
         else:
             if self.steps_beyond_terminated == 0:
                 logger.warn(
