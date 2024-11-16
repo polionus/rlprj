@@ -5,7 +5,17 @@ from stable_baselines3 import DQN
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import BaseCallback
 
+from stable_baselines3.common.vec_env import SubprocVecEnv
+from stable_baselines3.common.utils import set_random_seed
 
+def make_env(env_id: str, rank: int, seed: int = 0):
+    def _init():
+        # env = gym.make(env_id)
+        env = gym.make(env_id,dt_multip = dt_multip, max_episode_steps=max_episode_steps) #"CustomCartPole-v0"
+        env.reset(seed=seed + rank)
+        return env
+    set_random_seed(seed)
+    return _init
 
 gym.register(
     id="CustomCartPole-v0",
@@ -13,6 +23,7 @@ gym.register(
     reward_threshold = 475.0,
     max_episode_steps = 500, 
 )
+
 
 class RewardCallback(BaseCallback):
 
@@ -36,7 +47,6 @@ class RewardCallback(BaseCallback):
     def _on_training_end(self) -> None:
         print(np.mean(self.eps_returns_list))
     
-
 class MeanReturnCallback(BaseCallback):
     def __init__(self, verbose=0):
         super(MeanReturnCallback, self).__init__(verbose)
@@ -109,20 +119,22 @@ class MeanReturnCallback(BaseCallback):
 
 if __name__ == "__main__":
 
-   
-
     T = 1000
-    dt_multip = 0.3
+    dt_multip = 0.05
     max_episode_steps = 500/dt_multip
 
     # callback =  RewardCallback()
     callback = MeanReturnCallback()
 
-    env = gym.make("CustomCartPole-v0",dt_multip = dt_multip, max_episode_steps=max_episode_steps)
+    # env = gym.make("CustomCartPole-v0",dt_multip = dt_multip, max_episode_steps=max_episode_steps)
     
+    num_cpu = 24
+    env_id = "CustomCartPole-v0"
+    vec_env = SubprocVecEnv([make_env(env_id, i) for i in range(num_cpu)])
+
     #env = gym.make("CartPole-v1")
     policy_kwargs = dict(net_arch=[64, 64, 64])
 
-    model = PPO("MlpPolicy", env, policy_kwargs = policy_kwargs, verbose=1)
+    model = PPO("MlpPolicy", vec_env, policy_kwargs = policy_kwargs, verbose=1)
     model.learn(total_timesteps=1e5/dt_multip, callback=callback)
     
