@@ -59,16 +59,16 @@ class MeanReturnCallback(BaseCallback):
     def _on_training_start(self) -> None:
         # Initialize the episode rewards after the environment is set
         self.episode_rewards = [[] for _ in range(self.training_env.num_envs)]
-        # Initialize the plot
-        # plt.ion()
-        # self.fig, self.ax = plt.subplots(figsize=(10, 5))
-        # self.line, = self.ax.plot([], [], label='Return')
-        # self.ax.set_xlabel('Episode')
-        # self.ax.set_ylabel('Return')
-        # self.ax.set_title('Return over Episodes')
-        # self.ax.grid(True)
-        # self.ax.legend()
-        # plt.show()
+        Initialize the plot
+        plt.ion()
+        self.fig, self.ax = plt.subplots(figsize=(10, 5))
+        self.line, = self.ax.plot([], [], label='Return')
+        self.ax.set_xlabel('Episode')
+        self.ax.set_ylabel('Return')
+        self.ax.set_title('Return over Episodes')
+        self.ax.grid(True)
+        self.ax.legend()
+        plt.show()
 
     def _on_step(self) -> bool:
         # Get rewards and done flags for each environment
@@ -85,13 +85,13 @@ class MeanReturnCallback(BaseCallback):
                 self.episode_timestamps.append(self.num_timesteps)
                 self.episode_rewards[i] = []  # Reset rewards for the next episode
 
-                # # Update the plot
-                # self.line.set_xdata(range(len(self.episode_returns)))
-                # self.line.set_ydata(self.episode_returns)
-                # self.ax.relim()
-                # self.ax.autoscale_view()
-                # self.fig.canvas.draw()
-                # self.fig.canvas.flush_events()
+                # Update the plot
+                self.line.set_xdata(range(len(self.episode_returns)))
+                self.line.set_ydata(self.episode_returns)
+                self.ax.relim()
+                self.ax.autoscale_view()
+                self.fig.canvas.draw()
+                self.fig.canvas.flush_events()
 
         return True
 
