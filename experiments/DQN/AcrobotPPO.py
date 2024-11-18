@@ -8,7 +8,7 @@ from stable_baselines3.common.utils import set_random_seed
 from stable_baselines3.common.vec_env import VecNormalize
 import os
 
-#TODO: CustomAcrobot
+# Register custom acrobot
 gym.register(
     id="CustomAcrobot-v1",
     entry_point="custom_acrobot:CustomAcrobotEnv",
@@ -148,6 +148,22 @@ if __name__ == "__main__":
         ppo_model = PPO.load(model_path)
 
 
+
+
+
+    # Render Environment After Training
+    print("Rendering trained agent...")
+    render_env = gym.make(env_id, render_mode="human")  # Specify render mode
+    obs, _ = render_env.reset()  # Unpack the tuple returned by reset()
+    for _ in range(3000):  # Adjust the number of steps as needed
+        action, _states = ppo_model.predict(obs, deterministic=True)
+        obs, reward, terminated, truncated, info = render_env.step(action)  # Unpack all values
+        if terminated or truncated:  # Check if the episode has ended
+            obs, _ = render_env.reset()  # Reset and unpack
+    render_env.close()
+
+
+
     # # DQN Configuration
     # print("Training DQN...")
     # dqn_model = DQN(
@@ -184,15 +200,3 @@ if __name__ == "__main__":
     # # Load the trained PPO model
     # print("Loading trained PPO model...")
     # ppo_model = PPO.load("PPOAcrobot.zip")
-
-
-    # Render Environment After Training
-    print("Rendering trained agent...")
-    render_env = gym.make(env_id, render_mode="human")  # Specify render mode
-    obs, _ = render_env.reset()  # Unpack the tuple returned by reset()
-    for _ in range(3000):  # Adjust the number of steps as needed
-        action, _states = ppo_model.predict(obs, deterministic=True)
-        obs, reward, terminated, truncated, info = render_env.step(action)  # Unpack all values
-        if terminated or truncated:  # Check if the episode has ended
-            obs, _ = render_env.reset()  # Reset and unpack
-    render_env.close()
