@@ -10,10 +10,10 @@ import os
 
 #TODO: CustomAcrobot
 gym.register(
-    id="CustomCartPole-v0",
-    entry_point="custom_cartpole:CustomCartPoleEnv",
-    reward_threshold = 475.0,
-    max_episode_steps = 500, 
+    id="CustomAcrobot-v1",
+    entry_point="custom_acrobot:CustomAcrobotEnv",
+    reward_threshold=-100.0,  # Success if cumulative reward is better than -100
+    max_episode_steps=500,    # Default max steps (adjust if dt changes significantly)
 )
 
 
@@ -21,6 +21,8 @@ gym.register(
 def make_env(env_id: str, rank: int, seed: int = 0):
     def _init():
         env = gym.make(env_id)
+        env = gym.make(env_id,dt_multip = dt_multip, max_episode_steps=max_episode_steps) #"CustomAcrobot-v1"
+
         env.reset(seed=seed + rank)
         return env
     set_random_seed(seed)
@@ -40,16 +42,16 @@ class MeanReturnCallback(BaseCallback):
     def _on_training_start(self) -> None:
         # Initialize the episode rewards after the environment is set
         self.episode_rewards = [[] for _ in range(self.training_env.num_envs)]
-        # # Initialize the plot
-        # plt.ion()
-        # self.fig, self.ax = plt.subplots(figsize=(10, 5))
-        # self.line, = self.ax.plot([], [], label='Return')
-        # self.ax.set_xlabel('Episode')
-        # self.ax.set_ylabel('Return')
-        # self.ax.set_title('Return over Episodes')
-        # self.ax.grid(True)
-        # self.ax.legend()
-        # plt.show()
+        # Initialize the plot
+        plt.ion()
+        self.fig, self.ax = plt.subplots(figsize=(10, 5))
+        self.line, = self.ax.plot([], [], label='Return')
+        self.ax.set_xlabel('Episode')
+        self.ax.set_ylabel('Return')
+        self.ax.set_title('Return over Episodes')
+        self.ax.grid(True)
+        self.ax.legend()
+        plt.show()
 
     def _on_step(self) -> bool:
         # Get rewards and done flags for each environment
@@ -66,13 +68,13 @@ class MeanReturnCallback(BaseCallback):
                 self.episode_timestamps.append(self.num_timesteps)
                 self.episode_rewards[i] = []  # Reset rewards for the next episode
 
-                # # Update the plot
-                # self.line.set_xdata(range(len(self.episode_returns)))
-                # self.line.set_ydata(self.episode_returns)
-                # self.ax.relim()
-                # self.ax.autoscale_view()
-                # self.fig.canvas.draw()
-                # self.fig.canvas.flush_events()
+                # Update the plot
+                self.line.set_xdata(range(len(self.episode_returns)))
+                self.line.set_ydata(self.episode_returns)
+                self.ax.relim()
+                self.ax.autoscale_view()
+                self.fig.canvas.draw()
+                self.fig.canvas.flush_events()
 
         return True
 
@@ -100,9 +102,13 @@ class MeanReturnCallback(BaseCallback):
 
 if __name__ == "__main__":
     # Configuration
-    env_id = "Acrobot-v1"
+    # env_id = "Acrobot-v1"
+    env_id = "CustomAcrobot-v1"
     num_cpu = 8  # Number of parallel environments
     total_timesteps = int(1e6)  # Total timesteps for training
+
+    dt_multip = 0.1
+    max_episode_steps = 500/dt_multip
 
     # Create vectorized environments
     vec_env = SubprocVecEnv([make_env(env_id, i) for i in range(num_cpu)])
@@ -115,7 +121,7 @@ if __name__ == "__main__":
     policy_kwargs = dict(net_arch=[64, 64, 64])
 
     # Check if model exists
-    model_path = "PPOAcrobot2.zip"
+    model_path = "PPOAcrobot.zip"
     if not os.path.exists(model_path):
         print("Model file not found. Training a new model...")
         # PPO Configuration
