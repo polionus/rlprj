@@ -1,10 +1,8 @@
 import gymnasium as gym
-from stable_baselines3.common.callbacks import BaseCallback
-from stable_baselines3 import PPO, DQN
-
-
 import numpy as np
 import sys
+from stable_baselines3.common.callbacks import BaseCallback
+from stable_baselines3 import PPO, DQN
 
 
 #TODO: 1. Make a virtual envrionment
