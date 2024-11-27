@@ -1,6 +1,7 @@
 import gymnasium as gym
 import numpy as np
 import sys
+import os
 from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3 import PPO, DQN
 
@@ -11,6 +12,11 @@ from stable_baselines3 import PPO, DQN
 
 #first argument is the path to save
 path = sys.argv[1]
+seed = sys.argv[2]
+t_multiplier = sys.argv[3]
+alpha = sys.argv[4]
+alg = sys.argv[5]
+env_name = sys.argv[6]
 env =  gym.make("CartPole-v1")
 
 
@@ -21,12 +27,16 @@ class RewardCallback(BaseCallback):
         super().__init__()
         self.eps_returns_list = []
         self.eps_return = 0
+        self.steps_rewards = []
+        self.done_status = []
     
     def _on_training_start(self) -> None:
         pass
 
     def _on_step(self) -> bool:
-        
+
+        self.steps_rewards.append(self.locals['rewards'])
+        self.done_status.append(self.locals['dones'])
         self.eps_return += self.locals['rewards']
         if self.locals['dones'] == True:
             self.eps_returns_list.append(self.eps_return)
@@ -35,14 +45,16 @@ class RewardCallback(BaseCallback):
         return True
 
     def _on_training_end(self) -> None:
-        #np.save()
+        filename_returns = f"Alg{alg}_env{env_name}_seed{seed}_tmultiplier{t_multiplier}_alpha{alpha}_RETURNS.npy"
+        filename_rewards = f"Alg{alg}_env{env_name}_seed{seed}_tmultiplier{t_multiplier}_alpha{alpha}_REWARDS.npy"
 
-        #TODO: Understand how to save the file in compute canada.
-        #auc = np.mean(self.eps_returns_list)
+        full_returns = os.path.join(path, filename_returns)
+        full_rewards = os.path.join(path, filename_rewards)
 
+        np.save(full_returns, self.eps_returns_list)
+        np.save(full_rewards, np.column_stack((self.steps_rewards, self.done_status)))
 
-        #np.save(np.array(self.eps_returns_list),path)
-        print(np.mean(self.eps_returns_list))
+        return True
 
 class Experiment:
     def __init__(self, 
