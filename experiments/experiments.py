@@ -1,3 +1,4 @@
+import argparse
 import gymnasium as gym
 import numpy as np
 import sys
@@ -10,21 +11,18 @@ from stable_baselines3 import PPO, DQN
 #2. Have all the custom enviornment code files in the venv
 #3. Have a requirements.txt file so that people can just easily install ali.
 
-#first argument is the path to save
-path = sys.argv[1]
-seed = sys.argv[2]
-t_multiplier = sys.argv[3]
-alpha = sys.argv[4]
-alg = sys.argv[5]
-env_name = sys.argv[6]
-env =  gym.make("CartPole-v1")
-
 
 #TODO: What to do in the callback
 class RewardCallback(BaseCallback):
 
-    def __init__(self, verbose =0):
-        super().__init__()
+    def __init__(self, model_id, env_id, seed, delta_t, alpha, path, verbose=0):
+        super().__init__(verbose)
+        self.model_id = model_id
+        self.env_id = env_id
+        self.seed = seed
+        self.delta_t = delta_t
+        self.alpha = alpha
+        self.path = path
         self.eps_returns_list = []
         self.eps_return = 0
         self.steps_rewards = []
@@ -45,16 +43,17 @@ class RewardCallback(BaseCallback):
         return True
 
     def _on_training_end(self) -> None:
-        filename_returns = f"Alg{alg}_env{env_name}_seed{seed}_tmultiplier{t_multiplier}_alpha{alpha}_RETURNS.npy"
-        filename_rewards = f"Alg{alg}_env{env_name}_seed{seed}_tmultiplier{t_multiplier}_alpha{alpha}_REWARDS.npy"
+        filename_returns = f"Alg{self.model_id}_env{self.env_id}_seed{self.seed}_tmultiplier{self.delta_t}_alpha{self.alpha}_RETURNS.npy"
+        filename_rewards = f"Alg{self.model_id}_env{self.env_id}_seed{self.seed}_tmultiplier{self.delta_t}_alpha{self.alpha}_REWARDS.npy"
 
-        full_returns = os.path.join(path, filename_returns)
-        full_rewards = os.path.join(path, filename_rewards)
+        full_returns = os.path.join(self.path, filename_returns)
+        full_rewards = os.path.join(self.path, filename_rewards)
 
         np.save(full_returns, self.eps_returns_list)
         np.save(full_rewards, np.column_stack((self.steps_rewards, self.done_status)))
 
         return True
+     
 
 class Experiment:
     def __init__(self, 
@@ -68,10 +67,10 @@ class Experiment:
                  policy_kwargs = dict(net_arch=[64,64,64]),
                  device = 'cpu',
                  seed = 0, #TODO: Please think about this?
-                 callback = RewardCallback(),
+                #  callback = RewardCallback(),
                  total_timesteps = 200_000,
                  max_episode_steps = None, 
-                 save_path = path,
+                 save_path = None,
                  batch_size = 16,
                  buffer_size = 500, 
                  target_update = 100, #TODO: Find out the default values of these parameters.
@@ -80,7 +79,7 @@ class Experiment:
         self.returns = 0
         self.delta_t = delta_t #TODO: How can we compare graphs if we make the delta t as a multiple of the default time step?
         self.gamma = gamma
-        self.callback = callback
+        # self.callback = callback
         self.save_path = save_path
         self.batch_size = batch_size
         self.epsilon = epsilon
@@ -90,7 +89,7 @@ class Experiment:
         self.policy_kwargs = policy_kwargs
         self.device = device
         self.seed = seed
-        self.save_path = '',
+
         self.buffer_size = buffer_size
         self.target_update = target_update
 
@@ -99,13 +98,21 @@ class Experiment:
         self.env_id = env_id
         self.total_timesteps = total_timesteps/self.delta_t
 
+        # Initialize the callback with required parameters
+        self.callback = RewardCallback(
+            model_id=self.model_id,
+            env_id=self.env_id,
+            seed=self.seed,
+            delta_t=self.delta_t,
+            alpha=self.learning_rate,
+            path=self.save_path
+        )
 
         #make the environment
         self.make_env()
 
         #define the model
         self.define_model()
-
 
     def make_env(self):
 
@@ -162,8 +169,8 @@ class Experiment:
                         gamma = self.gamma,
                         device= self.device,
                         batch_size=self.batch_size,
-                        exploration_initial_eps = self.epsilon,
-                        exploration_final_eps = self.epsilon,
+                        # exploration_initial_eps = self.epsilon,
+                        # exploration_final_eps = self.epsilon,
                         )
         elif self.model_id == 'DQN':
             self.model = DQN("MlpPolicy", 
@@ -182,25 +189,45 @@ class Experiment:
                         )
 
 
+def main():
+    # Step 1: Parse command-line arguments
+    parser = argparse.ArgumentParser(description="Run experiments with different configurations.")
+    parser.add_argument("--seed", type=int, default=0, help="Random seed for the experiment")
+    parser.add_argument("--alg", type=str, default="PPO", choices=["PPO", "DQN"], help="Algorithm to use")
+    parser.add_argument("--env", type=str, default="CartPole", help="Environment ID")
+    parser.add_argument("--t_multip", type=float, default=1.0, help="Time step multiplier (delta_t)")
+    parser.add_argument("--no_t_step", type=float, default=10000, help="No. of tiem steps")
+    parser.add_argument("--alph", type=float, default=0.001, help="Learning rate")
+    parser.add_argument("--path", type=str, default="./", help="Path to save results")
+    args = parser.parse_args()
 
 
-exp = Experiment(model_id = 'DQN',
-                 env_id = 'CartPole', 
-                 delta_t = 1,
+
+    exp = Experiment(model_id = args.alg,
+                 env_id = args.env, 
+                 delta_t = args.t_multip,
                  gamma = 1,
                  epsilon = 0,
-                 learning_rate = 0.001,
+                 learning_rate = args.alph,
                  #steps_per_update = 1,
                  policy_kwargs = dict(net_arch=[64,64,64]),
                  device = 'cpu',
-                 seed = 0, #TODO: Please think about this?
-                 callback = RewardCallback(),
-                 total_timesteps = 200,
+                 seed = args.seed, #TODO: Please think about this?
+                #  callback = RewardCallback(),
+                 total_timesteps = args.no_t_step,
                  max_episode_steps = None, 
-                 save_path = path,
+                 save_path = args.path,
                  batch_size = 16,
                  buffer_size = 500, 
                  target_update = 100, #TODO: Find out the default values of these parameters.
                  )
 
-exp.run()
+    # Step 3: Run the experiment
+    exp.run()
+
+    # Step 4: Save the results
+    exp.save_data()
+
+
+if __name__ == "__main__":
+    main()
