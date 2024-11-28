@@ -1,4 +1,5 @@
 import argparse
+import zipfile
 import gymnasium as gym
 import numpy as np
 import sys
@@ -15,7 +16,7 @@ from stable_baselines3 import PPO, DQN
 #TODO: What to do in the callback
 class RewardCallback(BaseCallback):
 
-    def __init__(self, model_id, env_id, seed, delta_t, alpha, path, verbose=0):
+    def __init__(self, model_id, env_id, seed, delta_t, alpha, path, task_ID, verbose=0):
         super().__init__(verbose)
         self.model_id = model_id
         self.env_id = env_id
@@ -23,6 +24,7 @@ class RewardCallback(BaseCallback):
         self.delta_t = delta_t
         self.alpha = alpha
         self.path = path
+        self.task_ID = task_ID  # Add task_ID
         self.eps_returns_list = []
         self.eps_return = 0
         self.steps_rewards = []
@@ -52,6 +54,16 @@ class RewardCallback(BaseCallback):
         np.save(full_returns, self.eps_returns_list)
         np.save(full_rewards, np.column_stack((self.steps_rewards, self.done_status)))
 
+        # Create a ZIP file
+        zip_filename = os.path.join(self.path, f"{self.task_ID}.zip")
+        with zipfile.ZipFile(zip_filename, 'w') as zipf:
+            zipf.write(full_returns, os.path.basename(full_returns))
+            zipf.write(full_rewards, os.path.basename(full_rewards))
+
+        # Optionally, clean up the .npy files if no longer needed
+        os.remove(full_returns)
+        os.remove(full_rewards)
+
         return True
      
 
@@ -74,6 +86,7 @@ class Experiment:
                  batch_size = 16,
                  buffer_size = 500, 
                  target_update = 100, #TODO: Find out the default values of these parameters.
+                 task_ID="01",  # Add task_ID parameter
                  ):
         
         self.returns = 0
@@ -97,6 +110,7 @@ class Experiment:
         self.max_episode_steps = max_episode_steps
         self.env_id = env_id
         self.total_timesteps = total_timesteps/self.delta_t
+        self.task_ID = task_ID  # Store task_ID
 
         # Initialize the callback with required parameters
         self.callback = RewardCallback(
@@ -105,7 +119,8 @@ class Experiment:
             seed=self.seed,
             delta_t=self.delta_t,
             alpha=self.learning_rate,
-            path=self.save_path
+            path=self.save_path,
+            task_ID=self.task_ID,  # Pass task_ID to the callback
         )
 
         #make the environment
@@ -199,6 +214,7 @@ def main():
     parser.add_argument("--no_t_step", type=float, default=10000, help="No. of tiem steps")
     parser.add_argument("--alph", type=float, default=0.001, help="Learning rate")
     parser.add_argument("--path", type=str, default="./", help="Path to save results")
+    parser.add_argument("--task_ID", type=str, default="01", help="Task_ID")
     args = parser.parse_args()
 
 
@@ -220,6 +236,7 @@ def main():
                  batch_size = 16,
                  buffer_size = 500, 
                  target_update = 100, #TODO: Find out the default values of these parameters.
+                 task_ID=args.task_ID,  # Pass task_ID here
                  )
 
     # Step 3: Run the experiment
