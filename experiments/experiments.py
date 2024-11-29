@@ -193,7 +193,7 @@ exp = Experiment(model_id = 'DQN',
                  #steps_per_update = 1,
                  policy_kwargs = dict(net_arch=[64,64,64]),
                  device = 'cpu',
-                 seed = 0, #TODO: Please think about this?
+                 seed = int(seed), #TODO: Please think about this?
                  callback = RewardCallback(),
                  total_timesteps = 200,
                  max_episode_steps = None, 
