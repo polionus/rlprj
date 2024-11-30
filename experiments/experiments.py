@@ -6,6 +6,7 @@ import sys
 import os
 from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3 import PPO, DQN
+from tqdm import tqdm
 
 
 #TODO: 1. Make a virtual envrionment
@@ -16,7 +17,7 @@ from stable_baselines3 import PPO, DQN
 #TODO: What to do in the callback
 class RewardCallback(BaseCallback):
 
-    def __init__(self, model_id, env_id, seed, delta_t, alpha, path, task_ID, verbose=0):
+    def __init__(self, model_id, env_id, seed, delta_t, alpha, path, task_ID, verbose=0, total_timesteps=200_000):
         super().__init__(verbose)
         self.model_id = model_id
         self.env_id = env_id
@@ -29,9 +30,13 @@ class RewardCallback(BaseCallback):
         self.eps_return = 0
         self.steps_rewards = []
         self.done_status = []
+
+        self.progress_bar = None
+        self.steps_completed = 0
     
     def _on_training_start(self) -> None:
-        pass
+        self.progress_bar = tqdm(total=self.total_timesteps, desc="Training Progress", unit="steps")
+
 
     def _on_step(self) -> bool:
 
@@ -41,10 +46,16 @@ class RewardCallback(BaseCallback):
         if self.locals['dones'] == True:
             self.eps_returns_list.append(self.eps_return)
             self.eps_return =0
+
+        self.steps_completed += 1
+        self.progress_bar.update(1)
        
         return True
 
     def _on_training_end(self) -> None:
+        if self.progress_bar:
+            self.progress_bar.close()
+
         filename_returns = f"Alg{self.model_id}_env{self.env_id}_seed{self.seed}_tmultiplier{self.delta_t}_alpha{self.alpha}_RETURNS.npy"
         filename_rewards = f"Alg{self.model_id}_env{self.env_id}_seed{self.seed}_tmultiplier{self.delta_t}_alpha{self.alpha}_REWARDS.npy"
 
@@ -54,15 +65,15 @@ class RewardCallback(BaseCallback):
         np.save(full_returns, self.eps_returns_list)
         np.save(full_rewards, np.column_stack((self.steps_rewards, self.done_status)))
 
-        # Create a ZIP file
-        zip_filename = os.path.join(self.path, f"{self.task_ID}.zip")
-        with zipfile.ZipFile(zip_filename, 'w') as zipf:
-            zipf.write(full_returns, os.path.basename(full_returns))
-            zipf.write(full_rewards, os.path.basename(full_rewards))
+        # # Create a ZIP file
+        # zip_filename = os.path.join(self.path, f"{self.task_ID}.zip")
+        # with zipfile.ZipFile(zip_filename, 'w') as zipf:
+        #     zipf.write(full_returns, os.path.basename(full_returns))
+        #     zipf.write(full_rewards, os.path.basename(full_rewards))
 
-        # Optionally, clean up the .npy files if no longer needed
-        os.remove(full_returns)
-        os.remove(full_rewards)
+        # # Optionally, clean up the .npy files if no longer needed
+        # os.remove(full_returns)
+        # os.remove(full_rewards)
 
         return True
      
@@ -177,7 +188,7 @@ class Experiment:
         if self.model_id == 'PPO':
             self.model = PPO("MlpPolicy", 
                         env=self.env, 
-                        verbose=1, 
+                        verbose=0, 
                         policy_kwargs=self.policy_kwargs,
                         learning_rate=self.learning_rate,
                         seed = self.seed,
@@ -190,7 +201,7 @@ class Experiment:
         elif self.model_id == 'DQN':
             self.model = DQN("MlpPolicy", 
                         env = self.env, 
-                        verbose=1, 
+                        verbose=0, 
                         policy_kwargs=self.policy_kwargs,
                         learning_rate=self.learning_rate,
                         seed = self.seed,
@@ -211,7 +222,7 @@ def main():
     parser.add_argument("--alg", type=str, default="PPO", choices=["PPO", "DQN"], help="Algorithm to use")
     parser.add_argument("--env", type=str, default="CartPole", help="Environment ID")
     parser.add_argument("--t_multip", type=float, default=1.0, help="Time step multiplier (delta_t)")
-    parser.add_argument("--no_t_step", type=float, default=10000, help="No. of tiem steps")
+    #parser.add_argument("--no_t_step", type=float, default=10000, help="No. of tiem steps")
     parser.add_argument("--alph", type=float, default=0.001, help="Learning rate")
     parser.add_argument("--path", type=str, default="./", help="Path to save results")
     parser.add_argument("--task_ID", type=str, default="01", help="Task_ID")
@@ -230,7 +241,7 @@ def main():
                  device = 'cpu',
                  seed = args.seed, #TODO: Please think about this?
                 #  callback = RewardCallback(),
-                 total_timesteps = args.no_t_step,
+                 total_timesteps = 200_000,
                  max_episode_steps = None, 
                  save_path = args.path,
                  batch_size = 16,
