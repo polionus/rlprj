@@ -1,20 +1,32 @@
 #!/bin/bash
 #SBATCH --job-name=parallel_jobs       # Job name
-#SBATCH --output=results/%a.zip     # Output log file for each array task
-#SBATCH --error=logs/error_%A_%a.log       # Error log file  for each task
-#SBATCH --time=02:30:00               # Time for each task
-#SBATCH --cpus-per-task=4             # Number of CPUs per task
-#SBATCH --mem=16G                     # Memory per task
-#SBATCH --array=0-150                   # Array index range (adjust based on parameter file size)
+#SBATCH --output=/home/saarhin/scratch/rlprj/experiments/results11/%a.zip     # Output log file for each array task
+#SBATCH --error=/home/saarhin/scratch/rlprj/experiments/logs11/error_%A_%a.log       # Error log file  for each task
+#SBATCH --time=00:30:00               # Time for each task
+#SBATCH --cpus-per-task=1             # Number of CPUs per task
+#SBATCH --mem=4G                     # Memory per task
+#SBATCH --array=0-1                   # Array index range (adjust based on parameter file size)
+#SBATCH --mail-user=samini1@ualberta.ca
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --account=def-mtaylor3
 
+cd $SLURM_TMPDIR
 module load python                 # Load necessary modules
+virtualenv --no-download timeRL
+source timeRL/bin/activate
+
+pip install numpy gymnasium torch stable-baselines3
+
 
 # Extract the parameter set for this array job
-PARAMS=$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" parameters.txt)
-
+#PARAMS=$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" parameters.txt)
+cp /home/saarhin/scratch/rlprj/experiments/experiments.py $SLURM_TMPDIR
+cp /home/saarhin/scratch/rlprj/experiments/custom_cartpole.py $SLURM_TMPDIR
+cp /home/saarhin/scratch/rlprj/experiments/custom_acrobot.py $SLURM_TMPDIR
+python $SLURM_TMPDIR/experiments.py --seed 17 --alg DQN --env CartPole --t_multip 1 --alph 0.01
 # Print which parameters are being used (for debugging)
 # Print which parameters are being used (for debugging)
-echo "Running with parameters: $PARAMS"
+# echo "Running with parameters: $PARAMS"
 
 # Execute the script with the extracted parameters
-python experiments.py  $PARAMS --task_ID $SLURM_ARRAY_TASK_ID
+# python experiments.py  $PARAMS --task_ID $SLURM_ARRAY_TASK_ID
