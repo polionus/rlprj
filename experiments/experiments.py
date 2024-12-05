@@ -219,6 +219,7 @@ def main():
     parser.add_argument("--alph", type=float, default=0.001, help="Learning rate")
     parser.add_argument("--path", type=str, default="./", help="Path to save results")
     parser.add_argument("--task_ID", type=str, default="01", help="Task_ID")
+    parser.add_argument("--time", type=str, default="01:00:00", help="Dummy argument!")
     args = parser.parse_args()
 
 

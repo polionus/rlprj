@@ -19,6 +19,9 @@ pip install numpy gymnasium torch stable-baselines3
 
 # Extract the parameter set for this array job
 PARAMS=$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" /home/saarhin/scratch/rlprj/experiments/parameters.txt)
+TIME = $(echo $PARAMS | cut -d' ' -f7)
+
+
 cp /home/saarhin/scratch/rlprj/experiments/experiments.py $SLURM_TMPDIR
 cp /home/saarhin/scratch/rlprj/experiments/custom_cartpole.py $SLURM_TMPDIR
 cp /home/saarhin/scratch/rlprj/experiments/custom_acrobot.py $SLURM_TMPDIR
