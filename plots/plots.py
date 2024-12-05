@@ -47,7 +47,7 @@ class custom_plt:
             average_returns = np.mean(all_returns, axis=0)
 
             # Calculate AUC for each seed
-            auc_values = [np.trapz(seed_returns) for seed_returns in all_returns]
+            auc_values = [np.trapezoid(seed_returns) for seed_returns in all_returns]
             p5 = np.percentile(auc_values, 5)
             p95 = np.percentile(auc_values, 95)
 
