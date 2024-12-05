@@ -142,7 +142,7 @@ class CustomMountainCarEnv(gym.Env):
         terminated = bool(
             position >= self.goal_position and velocity >= self.goal_velocity
         )
-        reward = -1.0
+        reward = -1.0 * self.dt_multip
 
         self.state = (position, velocity)
         if self.render_mode == "human":

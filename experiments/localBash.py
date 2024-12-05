@@ -1,13 +1,13 @@
 import subprocess
 import datetime
 
-seeds=[0, 1, 2]#, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-algs=[ "A2C"]
-envs=["MountainCar"]
-#ts=[0.1, 0.2, 0.4, 0.6, 0.8, 1, 1.2]
-ts=[1]
+seeds=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+algs=[ "A2C","PPO"]
+envs=["MountainCar"] #Armin:MountainCar  sarah:CartPole   Masoud:Acrobot
+ts=[0.125, 0.25, 0.5, 1, 2, 4, 8]
+#ts=[1]
 alphs=[0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001]
-count = 0
+count = 12
 for seed in seeds:
     for alg in algs:
         for env in envs:
