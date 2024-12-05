@@ -45,16 +45,16 @@ class RewardCallback(BaseCallback):
         return True
 
     def _on_training_end(self) -> None:
-        filename_returns = f"Alg{self.model_id}_env{self.env_id}_seed{self.seed}_tmultiplier{self.delta_t}_alpha{self.alpha}_RETURNS.npy"
-        filename_rewards = f"Alg{self.model_id}_env{self.env_id}_seed{self.seed}_tmultiplier{self.delta_t}_alpha{self.alpha}_REWARDS.npy"
+        #filename_returns = f"Alg{self.model_id}_env{self.env_id}_seed{self.seed}_tmultiplier{self.delta_t}_alpha{self.alpha}_RETURNS.npy"
+        #filename_rewards = f"Alg{self.model_id}_env{self.env_id}_seed{self.seed}_tmultiplier{self.delta_t}_alpha{self.alpha}_REWARDS.npy"
 
-        full_returns_path = os.path.join(self.path, filename_returns)
-        full_rewards_path = os.path.join(self.path, filename_rewards)
+        #full_returns_path = os.path.join(self.path, filename_returns)
+        #full_rewards_path = os.path.join(self.path, filename_rewards)
 
-        np.save(full_returns_path, self.eps_returns_list)
-        np.save(full_rewards_path, np.column_stack((self.steps_rewards, self.done_status)))
+        np.save(self.path, self.eps_returns_list)
+        #np.save(full_rewards_path, np.column_stack((self.steps_rewards, self.done_status)))
 
-        # Create a ZIP file
+        """ # Create a ZIP file
         zip_filename = os.path.join(self.path, f"{self.task_ID}.zip")
         with zipfile.ZipFile(zip_filename, 'w') as zipf:
             zipf.write(full_returns_path)
@@ -62,7 +62,7 @@ class RewardCallback(BaseCallback):
 
         # Optionally, clean up the .npy files if no longer needed
         os.remove(full_returns_path)
-        os.remove(full_rewards_path)
+        os.remove(full_rewards_path) """
 
         return True
      
