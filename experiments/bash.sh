@@ -18,7 +18,7 @@ for seed in "${seeds[@]}"; do
     for env in "${envs[@]}"; do
       for t in "${ts[@]}"; do
         for alph in "${alphs[@]}"; do
-          path="./results"
+          path="/home/saarhin/scratch/rlprj/experiments/results13"
           # Append the parameter combination to the file
           echo "--seed $seed --alg $alg --env $env --t_multip $t --alph $alph --path $path" >> "$output_file"
         done

@@ -22,7 +22,7 @@ PARAMS=$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" /home/saarhin/scratch/rlprj/expe
 cp /home/saarhin/scratch/rlprj/experiments/experiments.py $SLURM_TMPDIR
 cp /home/saarhin/scratch/rlprj/experiments/custom_cartpole.py $SLURM_TMPDIR
 cp /home/saarhin/scratch/rlprj/experiments/custom_acrobot.py $SLURM_TMPDIR
-python $SLURM_TMPDIR/experiments.py $PARAMS --task_ID --task_ID $SLURM_ARRAY_TASK_ID --path /home/saarhin/scratch/rlprj/experiments/results12/
+python $SLURM_TMPDIR/experiments.py $PARAMS --task_ID $SLURM_ARRAY_TASK_ID 
 # Print which parameters are being used (for debugging)
 # Print which parameters are being used (for debugging)
 # echo "Running with parameters: $PARAMS"
