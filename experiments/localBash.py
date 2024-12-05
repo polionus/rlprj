@@ -7,7 +7,7 @@ envs=["MountainCar"] #Armin:MountainCar  sarah:CartPole   Masoud:Acrobot
 ts=[0.125, 0.25, 0.5, 1, 2, 4, 8]
 #ts=[1]
 alphs=[0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001]
-count = 12
+count = 0
 for seed in seeds:
     for alg in algs:
         for env in envs:
