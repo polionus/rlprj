@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Define arrays of parameter values
-seeds=(0) # 1 2 3 4 5 6 7 8 9)
-algs=("PPO") # "A2C")
-envs=("CartPole") # "Acrobot") 
+seeds=(0 1 2 3 4 5 8 9 10 11)
+algs=("PPO" "A2C")
+envs=("CartPole" "Acrobot") 
 ts=(0.125 0.25 0.5 1 2 4 8)
-alphs=(0.1) # 0.01 0.001 0.0001 0.00001)
+alphs=(0.1 0.01 0.001 0.0001 0.00001)
 
 # Create or overwrite the parameters file
 output_file="parameters.txt"

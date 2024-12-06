@@ -1,0 +1,1 @@
+--seed 0 --alg PPO --env CartPole --t_multip 8 --alph 0.1 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00

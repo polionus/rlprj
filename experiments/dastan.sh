@@ -3,10 +3,13 @@
 #SBATCH --error=/home/saarhin/scratch/rlprj/experiments/logs12/error_%A_%a.log       # Error log file  for each task
 #SBATCH --cpus-per-task=1             # Number of CPUs per task
 #SBATCH --mem=4G                     # Memory per task
-#SBATCH --array=0-7                   # Array index range (adjust based on parameter file size)
+#SBATCH --array=0-0                   # Array index range (adjust based on parameter file size)
 #SBATCH --mail-user=samini1@ualberta.ca
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --account=def-mtaylor3
+
+#
+
 
 cd $SLURM_TMPDIR
 module load python                 # Load necessary modules
@@ -20,6 +23,7 @@ pip install numpy gymnasium torch stable-baselines3
 PARAMS=$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" /home/saarhin/scratch/rlprj/experiments/parameters.txt)
 TIME = $(echo $PARAMS | cut -d' ' -f7)
 echo $TIME
+TIME=$(echo $PARAMS | grep -oP '(?<=--time )[^ ]+')
 
 #SBATCH --time=$TIME
 cp /home/saarhin/scratch/rlprj/experiments/experiments.py $SLURM_TMPDIR
