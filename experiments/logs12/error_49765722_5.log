@@ -1,0 +1,2 @@
+/localscratch/spool/slurmd/job49765791/slurm_script: line 21: TIME: command not found
+slurmstepd: error: *** JOB 49765791 ON cdr689 CANCELLED AT 2024-12-05T15:51:10 ***

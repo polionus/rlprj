@@ -1,0 +1,97 @@
+created virtual environment CPython3.11.5.final.0-64 in 16848ms
+  creator CPython3Posix(dest=/localscratch/saarhin.49765790.0/timeRL, clear=False, no_vcs_ignore=False, global=False)
+  seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=/home/saarhin/.local/share/virtualenv)
+    added seed packages: pip==24.3.1, setuptools==75.2.0, wheel==0.44.0
+  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+Looking in links: /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2023/x86-64-v3, /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2023/generic, /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2023/generic/numpy-2.1.1+computecanada-cp311-cp311-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/gymnasium-1.0.0+computecanada-py3-none-any.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2023/x86-64-v3/torch-2.5.1+computecanada-cp311-cp311-linux_x86_64.whl
+Collecting stable-baselines3
+  Using cached stable_baselines3-2.4.0-py3-none-any.whl.metadata (4.5 kB)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/cloudpickle-3.1.0+computecanada-py3-none-any.whl (from gymnasium)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/typing_extensions-4.12.2+computecanada-py3-none-any.whl (from gymnasium)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/Farama_Notifications-0.0.4+computecanada-py3-none-any.whl (from gymnasium)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/filelock-3.16.1+computecanada-py3-none-any.whl (from torch)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/networkx-3.4.2+computecanada-py3-none-any.whl (from torch)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/jinja2-3.1.4+computecanada-py3-none-any.whl (from torch)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/fsspec-2024.10.0+computecanada-py3-none-any.whl (from torch)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/sympy-1.13.1+computecanada-py3-none-any.whl (from torch)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/mpmath-1.3.0+computecanada-py3-none-any.whl (from sympy==1.13.1->torch)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2023/generic/numpy-1.26.4+computecanada-cp311-cp311-linux_x86_64.whl
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2023/x86-64-v3/pandas-2.2.2+computecanada-cp311-cp311-linux_x86_64.whl (from stable-baselines3)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2023/x86-64-v3/matplotlib-3.9.2+computecanada-cp311-cp311-linux_x86_64.whl (from stable-baselines3)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/MarkupSafe-2.1.5+computecanada-cp311-cp311-linux_x86_64.whl (from jinja2->torch)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2023/generic/contourpy-1.3.0+computecanada-cp311-cp311-linux_x86_64.whl (from matplotlib->stable-baselines3)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/cycler-0.12.1+computecanada-py3-none-any.whl (from matplotlib->stable-baselines3)
+Collecting fonttools>=4.22.0 (from matplotlib->stable-baselines3)
+  Using cached fonttools-4.55.2-py3-none-any.whl.metadata (164 kB)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2023/x86-64-v3/kiwisolver-1.4.7+computecanada-cp311-cp311-linux_x86_64.whl (from matplotlib->stable-baselines3)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/packaging-24.2+computecanada-py3-none-any.whl (from matplotlib->stable-baselines3)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/gentoo2023/x86-64-v3/pillow-10.4.0+computecanada-cp311-cp311-linux_x86_64.whl (from matplotlib->stable-baselines3)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/pyparsing-3.2.0+computecanada-py3-none-any.whl (from matplotlib->stable-baselines3)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/python_dateutil-2.9.0.post0+computecanada-py2.py3-none-any.whl (from matplotlib->stable-baselines3)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/pytz-2024.2+computecanada-py2.py3-none-any.whl (from pandas->stable-baselines3)
+Processing /cvmfs/soft.computecanada.ca/custom/python/wheelhouse/generic/tzdata-2024.2+computecanada-py2.py3-none-any.whl (from pandas->stable-baselines3)
+Collecting six>=1.5 (from python-dateutil>=2.7->matplotlib->stable-baselines3)
+  Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Using cached stable_baselines3-2.4.0-py3-none-any.whl (183 kB)
+Using cached fonttools-4.55.2-py3-none-any.whl (1.1 MB)
+Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Installing collected packages: pytz, mpmath, farama-notifications, tzdata, typing-extensions, sympy, six, pyparsing, pillow, packaging, numpy, networkx, MarkupSafe, kiwisolver, fsspec, fonttools, filelock, cycler, cloudpickle, python-dateutil, jinja2, gymnasium, contourpy, torch, pandas, matplotlib, stable-baselines3
+Successfully installed MarkupSafe-2.1.5+computecanada cloudpickle-3.1.0+computecanada contourpy-1.3.0+computecanada cycler-0.12.1+computecanada farama-notifications-0.0.4+computecanada filelock-3.16.1+computecanada fonttools-4.55.2 fsspec-2024.10.0+computecanada gymnasium-1.0.0+computecanada jinja2-3.1.4+computecanada kiwisolver-1.4.7+computecanada matplotlib-3.9.2+computecanada mpmath-1.3.0+computecanada networkx-3.4.2+computecanada numpy-1.26.4+computecanada packaging-24.2+computecanada pandas-2.2.2+computecanada pillow-10.4.0+computecanada pyparsing-3.2.0+computecanada python-dateutil-2.9.0.post0+computecanada pytz-2024.2+computecanada six-1.17.0 stable-baselines3-2.4.0 sympy-1.13.1+computecanada torch-2.5.1+computecanada typing-extensions-4.12.2+computecanada tzdata-2024.2+computecanada
+Using cpu device
+Wrapping the env with a `Monitor` wrapper
+Wrapping the env in a DummyVecEnv.
+---------------------------------
+| rollout/           |          |
+|    ep_len_mean     | 22.4     |
+|    ep_rew_mean     | 22.4     |
+| time/              |          |
+|    fps             | 598      |
+|    iterations      | 1        |
+|    time_elapsed    | 3        |
+|    total_timesteps | 2048     |
+---------------------------------
+--------------------------------------
+| rollout/                |          |
+|    ep_len_mean          | 9.33     |
+|    ep_rew_mean          | 9.33     |
+| time/                   |          |
+|    fps                  | 137      |
+|    iterations           | 2        |
+|    time_elapsed         | 29       |
+|    total_timesteps      | 4096     |
+| train/                  |          |
+|    approx_kl            | 74.1035  |
+|    clip_fraction        | 0.999    |
+|    clip_range           | 0.2      |
+|    entropy_loss         | -0.00119 |
+|    explained_variance   | -0.00127 |
+|    learning_rate        | 0.1      |
+|    loss                 | 2.75     |
+|    n_updates            | 10       |
+|    policy_gradient_loss | 0.257    |
+|    value_loss           | 9.84     |
+--------------------------------------
+--------------------------------------
+| rollout/                |          |
+|    ep_len_mean          | 9.62     |
+|    ep_rew_mean          | 9.62     |
+| time/                   |          |
+|    fps                  | 101      |
+|    iterations           | 3        |
+|    time_elapsed         | 60       |
+|    total_timesteps      | 6144     |
+| train/                  |          |
+|    approx_kl            | 0.0      |
+|    clip_fraction        | 0        |
+|    clip_range           | 0.2      |
+|    entropy_loss         | 0        |
+|    explained_variance   | 0        |
+|    learning_rate        | 0.1      |
+|    loss                 | 5.19     |
+|    n_updates            | 20       |
+|    policy_gradient_loss | 1.07e-08 |
+|    value_loss           | 9.45     |
+--------------------------------------
