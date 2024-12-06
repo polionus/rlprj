@@ -1,22 +1,33 @@
 import zipfile
 import numpy as np
 import matplotlib.pyplot as plt
+import glob
+import time
 
-# filename_returns = f"AlgDQN_envCartPole_seed10_tmultiplier_alpha_RETURNS.npy"
-# filename_rewards = f"AlgDQN_envCartPole_seed10_tmultiplier_alpha_REWARDS.npy"
+configs = []
+for seed in [0, 1, 2, 3, 4]: 
+  for alg in ["PPO", "A2C"]:
+    for env in ["CartPole", "Acrobot"]:
+      for t in ["0.125", "0.25", "0.5", "1.0", "2.0", "4.0", "8.0"]:
+        for alph in [0.1, 0.01, 0.001, 0.0001, 0.00001]:
+          configs.append(f"Alg{alg}_env{env}_seed{seed}_tmultiplier{t}_alpha{alph}_RETURNS.npz")
 
+count=1          
+for name in glob.glob("./results/results13/*.npz"):
+  
+    n = name.split('\\')[-1]
+    if n in configs:
+        ind = configs.index(n)
+        configs.pop(ind)
 
-
-# np.save(filename_returns, np.array([1,2]))
-# np.save(filename_rewards, np.array([3,4]))
-
-# zip_filename="sosisAli.zip"
-# with zipfile.ZipFile(zip_filename, 'w') as zipf:
-#             zipf.write(filename_returns)
-#             zipf.write(filename_rewards)
-
-
-A = np.load("AlgDQN_envCartPole_seed0_tmultiplier1.0_alpha0.01_RETURNS.npy")
-
-plt.plot(A)
-plt.show()
+    # A = np.load(name)
+    # plt.plot(A['returns'])
+    # plt.figure(f"Figure{count}")
+    # plt.title(name)
+    # plt.show()
+    # count +=1
+    # time.sleep(1)
+    # plt.close()
+configs.sort()
+for conf in configs:
+   print(conf)

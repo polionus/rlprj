@@ -18,7 +18,7 @@ class custom_plt:
     
     def _group_files(self):
         self.grouped_files = defaultdict(list)
-        file_pattern = os.path.join(self.input_dir, "*RETURNS.npy")
+        file_pattern = os.path.join(self.input_dir, "*.npz")
         for file_path in glob.glob(file_pattern):
             filename = os.path.basename(file_path)
 
@@ -35,11 +35,11 @@ class custom_plt:
 
             min_length = float('inf')
             for file_path in file_paths:
-                returns = np.load(file_path)
+                returns = np.load(file_path)['returns']
                 min_length = min(min_length, len(returns))
 
             for file_path in file_paths:
-                returns = np.load(file_path)[:min_length] 
+                returns = np.load(file_path)['returns'][:min_length] 
                 returns = returns.reshape(returns.shape[0])
                 all_returns.append(returns)
 
@@ -47,25 +47,25 @@ class custom_plt:
             average_returns = np.mean(all_returns, axis=0)
 
             # Calculate AUC for each seed
-            auc_values = [np.trapezoid(seed_returns) for seed_returns in all_returns]
-            p5 = np.percentile(auc_values, 5)
-            p95 = np.percentile(auc_values, 95)
+            # auc_values = [np.trapezoid(seed_returns) for seed_returns in all_returns]
+            # p5 = np.percentile(auc_values, 5)
+            # p95 = np.percentile(auc_values, 95)
 
-            if self.mode == "all":
-                mean_values = np.mean(all_returns, axis=1)
-            elif self.mode == "n" and self.n is not None:
-                mean_values = np.array([np.mean(seed_returns[-self.n:]) if len(seed_returns) >= self.n else np.mean(seed_returns) for seed_returns in all_returns])
+            # if self.mode == "all":
+            #     mean_values = np.mean(all_returns, axis=1)
+            # elif self.mode == "n" and self.n is not None:
+            #     mean_values = np.array([np.mean(seed_returns[-self.n:]) if len(seed_returns) >= self.n else np.mean(seed_returns) for seed_returns in all_returns])
 
-            p5_mean = np.percentile(mean_values, 5)
-            p95_mean = np.percentile(mean_values, 95)
+            # p5_mean = np.percentile(mean_values, 5)
+            # p95_mean = np.percentile(mean_values, 95)
 
-            # Calculate bootstrap confidence interval
-            confidence_interval = bootstrap((all_returns,), np.mean, axis=0, confidence_level=0.95, n_resamples=1000, method='basic')
-            lower_ci = confidence_interval.confidence_interval.low
-            upper_ci = confidence_interval.confidence_interval.high
+            # # Calculate bootstrap confidence interval
+            # confidence_interval = bootstrap((all_returns,), np.mean, axis=0, confidence_level=0.95, n_resamples=1000, method='basic')
+            # lower_ci = confidence_interval.confidence_interval.low
+            # upper_ci = confidence_interval.confidence_interval.high
 
             # Save averaged returns and confidence intervals in columns
-            output_data = np.vstack((average_returns, lower_ci, upper_ci, [p5]*len(average_returns), [p95]*len(average_returns), [p5_mean]*len(average_returns), [p95_mean]*len(average_returns))).T
+            output_data = np.vstack((average_returns, [1]*len(average_returns))).T
 
             output_filename = f"{setting_key[:-4]}_AVERAGED_RETURNS.npy"
             output_path = os.path.join(self.middle_dir, output_filename)
@@ -98,12 +98,12 @@ class custom_plt:
         for file_path in selected_files:
             data = np.load(file_path)
             average_returns = data[:, 0]
-            lower_ci = data[:, 1]
-            upper_ci = data[:, 2]
+            # lower_ci = data[:, 1]
+            # upper_ci = data[:, 2]
             
             label = os.path.basename(file_path).replace("_AVERAGED_RETURNS.npy", "")
             plt.plot(average_returns, label=label)
-            plt.fill_between(range(len(average_returns)), lower_ci, upper_ci, alpha=0.2)
+            # plt.fill_between(range(len(average_returns)), lower_ci, upper_ci, alpha=0.2)
 
         plt.title("Averaged Returns")
         plt.xlabel("Episode")
@@ -256,7 +256,7 @@ class custom_plt:
 
 
 if __name__ == "__main__":
-    input_dir = "./results"  
+    input_dir = "./results/results13"  
     middle_dir = "./plots/avg_npy"
     output_dir = "./plots/png"  
     mode = "all"
