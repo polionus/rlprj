@@ -5,11 +5,11 @@ import glob
 import time
 
 configs = []
-for seed in [0, 1, 2, 3, 4]: 
+for seed in [0, 1, 2, 3, 4, 5, 7, 8, 9, 10]: 
   for alg in ["PPO", "A2C"]:
     for env in ["CartPole", "Acrobot"]:
       for t in ["0.125", "0.25", "0.5", "1.0", "2.0", "4.0", "8.0"]:
-        for alph in [0.1, 0.01, 0.001, 0.0001, 0.00001]:
+        for alph in [0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001]:
           configs.append(f"Alg{alg}_env{env}_seed{seed}_tmultiplier{t}_alpha{alph}_RETURNS.npz")
 
 count=1          
@@ -28,6 +28,31 @@ for name in glob.glob("./results/results13/*.npz"):
     # count +=1
     # time.sleep(1)
     # plt.close()
-configs.sort()
-for conf in configs:
-   print(conf)
+def sort_key(file_name):
+    parts = file_name.split("_")
+    alg = parts[0]  # e.g., "AlgPPO"
+    env = parts[1]  # e.g., "envAcrobot"
+    seed = parts[2]  # e.g., "seed10"
+    tmult = parts[3]  # e.g., "tmultiplier0.125"
+    alpha = parts[4]  # e.g., "alpha0.0001"
+    return alg, env, tmult, alpha, seed
+
+# Sort the list
+sorted_files = sorted(configs, key=sort_key)
+
+# Print the sorted list
+t125 = [x for x in sorted_files if "tmultiplier0.125" in x]
+t25 = [x for x in sorted_files if "tmultiplier0.25" in x]
+t5 = [x for x in sorted_files if "tmultiplier0.5" in x]
+
+for name in sorted_files:
+  params = name.split("_")
+  alg = params[0][3:]
+  env = params[1][3:]
+  seed = params[2][4:]
+  t_multip = params[3][11:]
+  aplph = params[4][5:]
+
+  print(f"--seed {seed} --alg {alg} --env {env} --t_multip {t_multip} --alph {alph} --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00")
+
+

@@ -1,11 +1,11 @@
 import subprocess
 import datetime
 
-seeds=[0]
-algs=[ "A2C"]
+seeds=[9]
+algs=[ "PPO"]
 envs=["CartPole"] 
-ts=[8]
-alphs=[0.1]
+ts=[0.5]
+alphs=[0.000001]
 count = 101
 for seed in seeds:
     for alg in algs:

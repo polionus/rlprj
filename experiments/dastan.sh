@@ -1,9 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=parallel_jobs       # Job name
 #SBATCH --error=/home/saarhin/scratch/rlprj/experiments/logs12/error_%A_%a.log       # Error log file  for each task
+#SBATCH --time=15:00:00
 #SBATCH --cpus-per-task=1             # Number of CPUs per task
-#SBATCH --mem=4G                     # Memory per task
-#SBATCH --array=0-0                   # Array index range (adjust based on parameter file size)
+#SBATCH --mem=2G                     # Memory per task
+#SBATCH --array=0-1679                   # Array index range (adjust based on parameter file size)
 #SBATCH --mail-user=samini1@ualberta.ca
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --account=def-mtaylor3
@@ -21,11 +22,7 @@ pip install numpy gymnasium torch stable-baselines3
 
 # Extract the parameter set for this array job
 PARAMS=$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" /home/saarhin/scratch/rlprj/experiments/parameters.txt)
-TIME = $(echo $PARAMS | cut -d' ' -f7)
-echo $TIME
-TIME=$(echo $PARAMS | grep -oP '(?<=--time )[^ ]+')
 
-#SBATCH --time=$TIME
 cp /home/saarhin/scratch/rlprj/experiments/experiments.py $SLURM_TMPDIR
 cp /home/saarhin/scratch/rlprj/experiments/custom_cartpole.py $SLURM_TMPDIR
 cp /home/saarhin/scratch/rlprj/experiments/custom_acrobot.py $SLURM_TMPDIR
