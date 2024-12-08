@@ -46,7 +46,7 @@ class RewardCallback(BaseCallback):
         return True
 
     def _on_training_end(self) -> None:
-        filename_returns = f"Alg{self.model_id}_env{self.env_id}_seed{self.seed}_tmultiplier{self.delta_t}_alpha{self.alpha}_RETURNS.npy"
+        filename_returns = f"Alg{self.model_id}_env{self.env_id}_seed{self.seed}_tmultiplier{self.delta_t}_alpha{self.alpha}_RETURNS"
        
         full_returns_path = os.path.join(self.path, filename_returns)
         
