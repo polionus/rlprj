@@ -13,8 +13,6 @@
 --seed 10 --alg PPO --env Acrobot --t_multip 0.125 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 7 --alg PPO --env Acrobot --t_multip 0.125 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 8 --alg PPO --env Acrobot --t_multip 0.125 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
---seed 10 --alg PPO --env Acrobot --t_multip 0.125 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
---seed 7 --alg PPO --env Acrobot --t_multip 0.125 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 8 --alg PPO --env Acrobot --t_multip 0.125 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 10 --alg PPO --env Acrobot --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 7 --alg PPO --env Acrobot --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
@@ -31,8 +29,6 @@
 --seed 10 --alg PPO --env Acrobot --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 7 --alg PPO --env Acrobot --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 8 --alg PPO --env Acrobot --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
---seed 10 --alg PPO --env Acrobot --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
---seed 8 --alg PPO --env Acrobot --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 10 --alg PPO --env Acrobot --t_multip 0.5 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 7 --alg PPO --env Acrobot --t_multip 0.5 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 8 --alg PPO --env Acrobot --t_multip 0.5 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
@@ -69,7 +65,6 @@
 --seed 8 --alg PPO --env CartPole --t_multip 0.125 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 9 --alg PPO --env CartPole --t_multip 0.125 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 10 --alg PPO --env CartPole --t_multip 0.125 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
---seed 7 --alg PPO --env CartPole --t_multip 0.125 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 8 --alg PPO --env CartPole --t_multip 0.125 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 9 --alg PPO --env CartPole --t_multip 0.125 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 10 --alg PPO --env CartPole --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
@@ -92,7 +87,6 @@
 --seed 7 --alg PPO --env CartPole --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 8 --alg PPO --env CartPole --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 9 --alg PPO --env CartPole --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
---seed 10 --alg PPO --env CartPole --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 7 --alg PPO --env CartPole --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 8 --alg PPO --env CartPole --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 9 --alg PPO --env CartPole --t_multip 0.25 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
@@ -119,4 +113,3 @@
 --seed 10 --alg PPO --env CartPole --t_multip 0.5 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 7 --alg PPO --env CartPole --t_multip 0.5 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
 --seed 8 --alg PPO --env CartPole --t_multip 0.5 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00
---seed 9 --alg PPO --env CartPole --t_multip 0.5 --alph 1e-06 --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00

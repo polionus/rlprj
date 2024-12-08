@@ -45,6 +45,10 @@ t125 = [x for x in sorted_files if "tmultiplier0.125" in x]
 t25 = [x for x in sorted_files if "tmultiplier0.25" in x]
 t5 = [x for x in sorted_files if "tmultiplier0.5" in x]
 
+print(len(t125))
+print(len(t25))
+print(len(t5))
+
 for name in sorted_files:
   params = name.split("_")
   alg = params[0][3:]
