@@ -4,16 +4,21 @@ import matplotlib.pyplot as plt
 import glob
 import time
 
-configs = []
-for seed in [0, 1, 2, 3, 4, 5, 7, 8, 9, 10]: 
-  for alg in ["PPO", "A2C"]:
-    for env in ["CartPole", "Acrobot"]:
-      for t in ["0.125", "0.25", "0.5", "1.0", "2.0", "4.0", "8.0"]:
-        for alph in [0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001]:
-          configs.append(f"Alg{alg}_env{env}_seed{seed}_tmultiplier{t}_alpha{alph}_RETURNS.npz")
+# configs = []
+# for seed in [0, 1, 2, 3, 4, 5, 7, 8, 9, 10]: 
+#   for alg in ["PPO", "A2C"]:
+#     for env in ["CartPole", "Acrobot"]:
+#       for t in ["0.125", "0.25", "0.5", "1.0", "2.0", "4.0", "8.0"]:
+#         for alph in [0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001]:
+#           configs.append(f"Alg{alg}_env{env}_seed{seed}_tmultiplier{t}_alpha{alph}_RETURNS.npz")
+
+configs=[]
+with open("./experiments/left.txt") as f:
+    configs= f.readlines()
+
 
 count=1          
-for name in glob.glob("./results/results13/*.npz"):
+for name in glob.glob("../30seeds/results13/*.npz"):
   
     n = name.split('\\')[-1]
     if n in configs:
@@ -40,23 +45,25 @@ def sort_key(file_name):
 # Sort the list
 sorted_files = sorted(configs, key=sort_key)
 
+print(len(configs))
+
 # Print the sorted list
-t125 = [x for x in sorted_files if "tmultiplier0.125" in x]
-t25 = [x for x in sorted_files if "tmultiplier0.25" in x]
-t5 = [x for x in sorted_files if "tmultiplier0.5" in x]
+# t125 = [x for x in sorted_files if "tmultiplier0.125" in x]
+# t25 = [x for x in sorted_files if "tmultiplier0.25" in x]
+# t5 = [x for x in sorted_files if "tmultiplier0.5" in x]
 
-print(len(t125))
-print(len(t25))
-print(len(t5))
+# print(len(t125))
+# print(len(t25))
+# print(len(t5))
 
-for name in sorted_files:
-  params = name.split("_")
-  alg = params[0][3:]
-  env = params[1][3:]
-  seed = params[2][4:]
-  t_multip = params[3][11:]
-  aplph = params[4][5:]
+# for name in sorted_files:
+#   params = name.split("_")
+#   alg = params[0][3:]
+#   env = params[1][3:]
+#   seed = params[2][4:]
+#   t_multip = params[3][11:]
+#   aplph = params[4][5:]
 
-  print(f"--seed {seed} --alg {alg} --env {env} --t_multip {t_multip} --alph {alph} --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00")
+#   print(f"--seed {seed} --alg {alg} --env {env} --t_multip {t_multip} --alph {alph} --path /home/saarhin/scratch/rlprj/experiments/results13 --time 00:30:00")
 
 
