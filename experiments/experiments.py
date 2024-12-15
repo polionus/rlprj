@@ -227,7 +227,7 @@ def main():
     exp = Experiment(model_id = args.alg,
                  env_id = args.env, 
                  delta_t = args.t_multip,
-                 gamma = 0.95,
+                 gamma = 1,
                  epsilon = 0.2,
                  learning_rate = args.alph,
                  #steps_per_update = 1,
