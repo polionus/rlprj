@@ -1,8 +1,5 @@
-import zipfile
-import numpy as np
 import matplotlib.pyplot as plt
 import glob
-import time
 
 configs = []
 for seed in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]: 
@@ -13,23 +10,14 @@ for seed in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 1
           configs.append(f"Alg{alg}_env{env}_seed{seed}_tmultiplier{t}_alpha{alph}_RETURNS.npz")
 
 
-
+# remove the runs that are already completed from the list
 count=1          
 for name in glob.glob("../Big t/results13/*.npz"):
-  
     n = name.split('\\')[-1]
     if n in configs:
         ind = configs.index(n)
         configs.pop(ind)
 
-    # A = np.load(name)
-    # plt.plot(A['returns'])
-    # plt.figure(f"Figure{count}")
-    # plt.title(name)
-    # plt.show()
-    # count +=1
-    # time.sleep(1)
-    # plt.close()
 def sort_key(file_name):
     parts = file_name.split("_")
     alg = parts[0]  # e.g., "AlgPPO"

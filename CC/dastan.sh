@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=parallel_jobs       # Job name
-#SBATCH --error=/home/saarhin/scratch/rlprj/experiments/logs12/error_%A_%a.log       # Error log file  for each task
+#SBATCH --error=/home/$USER/scratch/rlprj/Experiments/logs12/error_%A_%a.log       # Error log file  for each task
 #SBATCH --time=24:00:00
 #SBATCH --cpus-per-task=1             # Number of CPUs per task
 #SBATCH --mem=4G                     # Memory per task
@@ -19,12 +19,12 @@ pip install numpy gymnasium torch stable-baselines3
 
 
 # Extract the parameter set for this array job
-PARAMS=$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" /home/saarhin/scratch/rlprj/experiments/parameters.txt)
+PARAMS=$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" /home/$USER/scratch/rlprj/CC/parameters.txt)
 
-cp /home/saarhin/scratch/rlprj/experiments/experiments.py $SLURM_TMPDIR
-cp /home/saarhin/scratch/rlprj/experiments/custom_cartpole.py $SLURM_TMPDIR
-cp /home/saarhin/scratch/rlprj/experiments/custom_acrobot.py $SLURM_TMPDIR
-python $SLURM_TMPDIR/experiments.py $PARAMS --task_ID $SLURM_ARRAY_TASK_ID 
+cp /home/$USER/scratch/rlprj/Experiments/main.py $SLURM_TMPDIR
+cp /home/$USER/scratch/rlprj/Environmnts/custom_cartpole.py $SLURM_TMPDIR
+cp /home/$USER/scratch/rlprj/Environments/custom_acrobot.py $SLURM_TMPDIR
+python $SLURM_TMPDIR/main.py $PARAMS --task_ID $SLURM_ARRAY_TASK_ID 
 # Print which parameters are being used (for debugging)
 # Print which parameters are being used (for debugging)
 # echo "Running with parameters: $PARAMS"
