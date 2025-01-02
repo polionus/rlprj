@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=parallel_jobs       # Job name
-#SBATCH --error=/home/$USER/scratch/rlprj/Experiments/logs12/error_%A_%a.log       # Error log file  for each task
+#SBATCH --error=/home/saarhin/scratch/rlprj/Experiments/logs12/error_%A_%a.log       # Error log file  for each task
 #SBATCH --time=24:00:00
 #SBATCH --cpus-per-task=1             # Number of CPUs per task
 #SBATCH --mem=4G                     # Memory per task
